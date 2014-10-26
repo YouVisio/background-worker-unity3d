@@ -14,6 +14,7 @@ namespace com.youvisio
 
         private Thread _thread;
         private DoWorkEventArgs _doWorkArgs;
+        private bool _isCanceled;
 
         public bool IsBusy
         {
@@ -47,8 +48,7 @@ namespace com.youvisio
                 return;
             }
 
-            _thread.Abort();
-            _thread = null;
+            _isCanceled = true;
         }
 
         public void Update()
@@ -57,10 +57,11 @@ namespace com.youvisio
             {
                 if (RunWorkerCompleted != null)
                 {
-                    RunWorkerCompleted(this, new RunWorkerCompletedEventArgs(_doWorkArgs.Result, _doWorkArgs.Error));
+                    RunWorkerCompleted(this, new RunWorkerCompletedEventArgs(_doWorkArgs.Result, _doWorkArgs.Error, _doWorkArgs.IsCanceled));
                 }
                 _thread = null;
                 _doWorkArgs = null;
+                _isCanceled = false;
             }
         }
 
@@ -68,15 +69,20 @@ namespace com.youvisio
         {
             if (DoWork != null)
             {
-                var args = new DoWorkEventArgs(arg);
-                try
+                var args = new DoWorkEventArgs(arg, () => _isCanceled);
+
+                if (!_isCanceled)
                 {
-                    DoWork(this, args);  
+                    try
+                    {
+                        DoWork(this, args);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        args.Error = ex;
+                    }
                 }
-                catch (System.Exception ex)
-                {
-                    args.Error = ex;
-                }
+                
                 _doWorkArgs = args;
             }
         }
@@ -84,11 +90,14 @@ namespace com.youvisio
 
     public class DoWorkEventArgs : System.EventArgs
     {
-        public DoWorkEventArgs(object argument)
+        private System.Func<bool> _canceled;
+
+        public DoWorkEventArgs(object argument, System.Func<bool> canceled)
         {
             Argument = argument;
+            _canceled = (canceled == null) ? () => false : canceled;
         }
-
+        public bool IsCanceled { get { return _canceled(); } }
         public object Argument { get; private set; }
         public object Result { get; set; }
         public System.Exception Error { get; set; }
@@ -97,12 +106,13 @@ namespace com.youvisio
 
     public class RunWorkerCompletedEventArgs : System.EventArgs
     {
-        public RunWorkerCompletedEventArgs(object result, System.Exception error)
+        public RunWorkerCompletedEventArgs(object result, System.Exception error, bool canceled)
         {
             Result = result;
             Error = error;
+            IsCanceled = canceled;
         }
-
+        public bool IsCanceled { get; private set; }
         public object Result { get; private set; }
         public System.Exception Error { get; private set; }
     }

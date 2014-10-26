@@ -51,7 +51,13 @@ public class Plane : MonoBehaviour {
         {
             Debug.Log("INSIDE1 " + Thread.CurrentThread.Name);
             Plane.InfoStr += "IN1("+Thread.CurrentThread.Name+");"+a.Argument+";";
-            Thread.Sleep(2000);
+            for (var i = 0; i < 10000000; ++i)
+            {
+                if (a.IsCanceled) return;
+
+                var n = 67876 + i / 100f;
+                var x = Mathf.Pow(n, 3);
+            }
             Debug.Log("INSIDE2 " + Thread.CurrentThread.Name);
             Plane.InfoStr += "IN2("+Thread.CurrentThread.Name+");";
 
