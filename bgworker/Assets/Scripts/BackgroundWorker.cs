@@ -33,6 +33,7 @@ namespace com.youvisio
                 throw new System.InvalidOperationException("Background Worker is already running");
             }
 
+            _isCanceled = false;
             _thread = new Thread(OnBackgroundWork);
             _thread.Name = "tBgW"+_thread.ManagedThreadId;
             _thread.IsBackground = true;
