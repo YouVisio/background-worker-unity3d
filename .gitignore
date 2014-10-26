@@ -19,8 +19,8 @@ bin
 *.blend2.meta
 *.DotSettings
 _ReSharper.*
-MagicArts/MagicArts_iOS/*
-MagicArts/MagicArts.apk
-MagicArts/MagicArts.exe
-MagicArts/MagicArts_Data/*
-MagicArts/MagicArts_WebPlayer/*
+bgworker/bgworker_iOS/*
+bgworker/bgworker.apk
+bgworker/bgworker.exe
+bgworker/bgworker_Data/*
+bgworker/bgworker_WebPlayer/*
