@@ -1,0 +1,26 @@
+#############
+# Unity: http://www.dannygoodayle.com/2013/02/14/using-unity-with-git/
+#############
+.DS_Store
+Library
+Temp
+obj
+bin
+*.csproj
+*.pidb
+*.unityproj
+*.sln
+*.userprefs
+*.user
+*.suo
+*.blend1
+*.blend2
+*.blend1.meta
+*.blend2.meta
+*.DotSettings
+_ReSharper.*
+MagicArts/MagicArts_iOS/*
+MagicArts/MagicArts.apk
+MagicArts/MagicArts.exe
+MagicArts/MagicArts_Data/*
+MagicArts/MagicArts_WebPlayer/*
