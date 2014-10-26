@@ -57,7 +57,7 @@ namespace com.youvisio
             {
                 if (RunWorkerCompleted != null)
                 {
-                    RunWorkerCompleted(this, new RunWorkerCompletedEventArgs(_doWorkArgs.Result));
+                    RunWorkerCompleted(this, new RunWorkerCompletedEventArgs(_doWorkArgs.Result, _doWorkArgs.Error));
                 }
                 _thread = null;
                 _doWorkArgs = null;
@@ -68,8 +68,15 @@ namespace com.youvisio
         {
             if (DoWork != null)
             {
-                DoWorkEventArgs args = new DoWorkEventArgs(arg);
-                DoWork(this, args);
+                var args = new DoWorkEventArgs(arg);
+                try
+                {
+                    DoWork(this, args);  
+                }
+                catch (System.Exception ex)
+                {
+                    args.Error = ex;
+                }
                 _doWorkArgs = args;
             }
         }
@@ -83,18 +90,20 @@ namespace com.youvisio
         }
 
         public object Argument { get; private set; }
-
         public object Result { get; set; }
+        public System.Exception Error { get; set; }
 
     }
 
     public class RunWorkerCompletedEventArgs : System.EventArgs
     {
-        public RunWorkerCompletedEventArgs(object result)
+        public RunWorkerCompletedEventArgs(object result, System.Exception error)
         {
             Result = result;
+            Error = error;
         }
 
         public object Result { get; private set; }
+        public System.Exception Error { get; private set; }
     }
 }

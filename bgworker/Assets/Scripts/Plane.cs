@@ -83,7 +83,7 @@ public class Plane : MonoBehaviour {
         }
         else
         {
-            pos2d = touches[0].position;
+            pos2d = new Vector2(touches[0].position.x, Screen.height - touches[0].position.y);
         }
 
 
